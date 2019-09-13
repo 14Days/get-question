@@ -1,15 +1,32 @@
-import React, {useContext, useCallback} from "react";
+import React, {useContext, useCallback, useState} from "react";
 import {withRouter} from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
-import {TypeContext} from '../../utils/context'
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import {TypeContext} from '../../utils/context';
+import TextField from "@material-ui/core/TextField";
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+
+import style from './index.module.scss'
 
 function Questions(props) {
   const {userType, setUserType} = useContext(TypeContext);
 
+  const [nums, setNums] = useState(0);
+
+  const [rows, setRows] = useState([
+    '5*2'
+  ]);
 
   const createType = useCallback(() => {
     let temp = null;
@@ -34,9 +51,21 @@ function Questions(props) {
     props.history.replace('/')
   };
 
+  const handleSetNum = (e) => {
+    let temp = parseInt(e.target.value);
+
+    if (temp > 30) {
+      setNums(30);
+    } else if (temp < 10) {
+      setNums(10)
+    } else {
+      setNums(temp);
+    }
+  };
+
   return (
     <>
-      <div style={{height: '80px'}}>
+      <div style={{height: '70px'}}>
         <AppBar>
           <Toolbar>
             <Typography variant="h6" style={{flexGrow: 1}}>准备生成{createType()}数学题目</Typography>
@@ -44,8 +73,57 @@ function Questions(props) {
           </Toolbar>
         </AppBar>
       </div>
-      <Container maxWidth={'md'}>
-        会尽快开工胡健
+      <Container maxWidth={'md'} className={style.optionContainer}>
+        <div>
+          <TextField
+            id="standard-password-input"
+            label="题目数量"
+            type="number"
+            autoComplete="current-password"
+            margin="normal"
+            value={nums}
+            onChange={handleSetNum}
+          />
+          <FormControl style={{margin: '16px 0 8px 8px'}}>
+            <InputLabel htmlFor="age-simple">Age</InputLabel>
+            <Select
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
+              inputProps={{
+                name: 'type',
+                id: 'age-simple',
+              }}
+            >
+              <MenuItem value={1}>小学</MenuItem>
+              <MenuItem value={2}>初中</MenuItem>
+              <MenuItem value={3}>高中</MenuItem>
+            </Select>
+          </FormControl>
+          <Button variant="contained" color="primary">
+            生成题目
+          </Button>
+          <Button variant="contained" color="primary">
+            保存
+          </Button>
+        </div>
+        <div className={style.tables}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>序号</TableCell>
+                <TableCell align="right">题目</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row, index) => (
+                <TableRow key={row}>
+                  <TableCell component="th" scope="row">{index+1}</TableCell>
+                  <TableCell align="right">{row}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Container>
     </>
   )
