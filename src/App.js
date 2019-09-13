@@ -1,12 +1,15 @@
 import React from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {TypeProvider} from './context';
 import Index from './Views/index'
 
 function App() {
   return (
-    <Router>
-      <Route exact path='/' component={Index}/>
-    </Router>
+    <TypeProvider>
+      <Router>
+        <Route exact path='/' component={Index}/>
+      </Router>
+    </TypeProvider>
   );
 }
 
