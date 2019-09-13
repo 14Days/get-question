@@ -16,21 +16,22 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import {exercise} from "../../utils/exercise";
 
 import style from './index.module.scss'
+
+const {ipcRenderer} = window.electron;
 
 function Questions(props) {
   const {userType, setUserType} = useContext(TypeContext);
 
-  const [nums, setNums] = useState(0);
+  const [nums, setNums] = useState(10);
 
-  const [rows, setRows] = useState([
-    '5*2'
-  ]);
+  const [rows, setRows] = useState([]);
 
   const createType = useCallback(() => {
     let temp = null;
-    switch (userType) {
+    switch (userType.type) {
       case 1:
         temp = '小学';
         break;
@@ -63,6 +64,18 @@ function Questions(props) {
     }
   };
 
+  const handleExercise = () => {
+    setRows(exercise(nums, userType.type));
+  };
+
+  const saveFile = () => {
+    ipcRenderer.send('saveFile', {
+      name: userType.name,
+      type: userType.type,
+      rows
+    })
+  };
+
   return (
     <>
       <div style={{height: '70px'}}>
@@ -87,8 +100,8 @@ function Questions(props) {
           <FormControl style={{margin: '16px 0 8px 8px'}}>
             <InputLabel htmlFor="age-simple">Age</InputLabel>
             <Select
-              value={userType}
-              onChange={(e) => setUserType(e.target.value)}
+              value={userType.type}
+              onChange={(e) => setUserType({...userType, type: e.target.value})}
               inputProps={{
                 name: 'type',
                 id: 'age-simple',
@@ -99,10 +112,10 @@ function Questions(props) {
               <MenuItem value={3}>高中</MenuItem>
             </Select>
           </FormControl>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={handleExercise}>
             生成题目
           </Button>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={saveFile}>
             保存
           </Button>
         </div>
@@ -117,7 +130,7 @@ function Questions(props) {
             <TableBody>
               {rows.map((row, index) => (
                 <TableRow key={row}>
-                  <TableCell component="th" scope="row">{index+1}</TableCell>
+                  <TableCell component="th" scope="row">{index + 1}</TableCell>
                   <TableCell align="right">{row}</TableCell>
                 </TableRow>
               ))}

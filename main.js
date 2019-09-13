@@ -1,4 +1,7 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
+const dayjs = require('dayjs');
+const fs = require('fs');
+const path = require('path');
 
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
 // 垃圾回收的时候，window对象将会自动的关闭
@@ -55,12 +58,30 @@ app.on('activate', () => {
 // 在这个文件中，你可以续写应用剩下主进程代码。
 // 也可以拆分成几个文件，然后用 require 导入。
 
-ipcMain.on('asynchronous-message', (event, arg) => {
-  console.log(arg); // prints "ping"
-  event.reply('asynchronous-reply', 'pong')
-});
+ipcMain.on('saveFile', (event, arg) => {
+  let temp = arg.rows.reduce((str, item) => {
+    return `${str}\n\n${item}`
+  });
 
-ipcMain.on('synchronous-message', (event, arg) => {
-  console.log(arg); // prints "ping"
-  event.returnValue = 'pong'
+  let type = null;
+  if (arg.type === 1) {
+    type = '小学';
+  } else if (arg.type === 2) {
+    type = '初中';
+  } else {
+    type = '高中';
+  }
+
+  // console.log(arg,__dirname, arg.name, type, dayjs().format('YYYY-M-D-H-m-s'))
+
+  fs.writeFile(
+    path.join(__dirname, 'questionBank', arg.name, type, `${dayjs().format('YYYY-M-D-H-m-s')}.txt`),
+    temp,
+    function (err) {
+      if (err) {
+        console.error(err);
+        // event.reply('asynchronous-reply', 'pong')
+      }
+    }
+  );
 });

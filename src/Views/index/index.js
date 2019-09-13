@@ -22,7 +22,10 @@ const Index = (props) => {
   const submit = () => {
     for (let i = 0; i < USER.length; ++i) {
       if (USER[i].username === info.username && info.password === '123') {
-        setUserType(USER[i].type);
+        setUserType({
+          name: USER[i].username,
+          type: USER[i].type
+        });
         props.history.replace('/questions');
         return
       }
