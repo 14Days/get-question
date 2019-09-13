@@ -3,8 +3,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
-import {TypeContext} from '../../context';
-import {USER} from '../../userDetail'
+import {TypeContext} from '../../utils/context';
+import {USER} from '../../utils/userDetail'
 
 import style from './index.module.scss';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
-import {TypeProvider} from './context';
+import {TypeProvider} from './utils/context';
 import Index from './Views/index'
 
 function App() {
