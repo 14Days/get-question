@@ -84,3 +84,27 @@ ipcMain.on('saveFile', (event, arg) => {
     }
   );
 });
+
+ipcMain.on('check', (event, args) => {
+  const temp = [];
+  let type = null;
+  if (args.type === 1) {
+    type = '小学';
+  } else if (args.type === 2) {
+    type = '初中';
+  } else {
+    type = '高中';
+  }
+  const files = fs.readdirSync(path.join(__dirname, 'questionBank', args.name, type));
+
+  files.forEach((item) => {
+    const file = fs.readFileSync(path.join(__dirname, 'questionBank', args.name, type, item)).toString().split('\n\n');
+    file.forEach((item) => {
+      if (item !== '') {
+        temp.push(item.split('、')[1])
+      }
+    })
+  });
+
+  event.reply('check-reply', temp)
+});

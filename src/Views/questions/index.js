@@ -64,8 +64,9 @@ function Questions(props) {
     }
   };
 
-  const handleExercise = () => {
-    setRows(exercise(nums, userType.type));
+  const handleExercise = async () => {
+    const temp = await exercise(nums, userType.type, userType.name);
+    setRows(temp);
   };
 
   const saveFile = () => {
