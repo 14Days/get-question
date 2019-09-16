@@ -59,8 +59,9 @@ app.on('activate', () => {
 // 也可以拆分成几个文件，然后用 require 导入。
 
 ipcMain.on('saveFile', (event, arg) => {
-  let temp = arg.rows.reduce((str, item) => {
-    return `${str}\n\n${item}`
+  let temp = '';
+  arg.rows.forEach((item, index) => {
+    temp = `${temp}${index + 1}、${item}\n\n`
   });
 
   let type = null;
@@ -71,8 +72,6 @@ ipcMain.on('saveFile', (event, arg) => {
   } else {
     type = '高中';
   }
-
-  // console.log(arg,__dirname, arg.name, type, dayjs().format('YYYY-M-D-H-m-s'))
 
   fs.writeFile(
     path.join(__dirname, 'questionBank', arg.name, type, `${dayjs().format('YYYY-M-D-H-m-s')}.txt`),

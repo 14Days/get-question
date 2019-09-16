@@ -67,7 +67,7 @@ const Index = (props) => {
         <SnackbarContent
           open={isError}
           onClose={handleClose}
-          message="登陆失败！"
+          message="请输入正确的用户名、密码"
           style={{backgroundColor: 'red'}}
         />
       </Snackbar>
