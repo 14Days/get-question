@@ -20,8 +20,6 @@ import {exercise} from "../../utils/exercise";
 
 import style from './index.module.scss'
 
-const {ipcRenderer} = window.electron;
-
 function Questions(props) {
   const {userType, setUserType} = useContext(TypeContext);
 
@@ -69,14 +67,6 @@ function Questions(props) {
     setRows(temp);
   };
 
-  const saveFile = () => {
-    ipcRenderer.send('saveFile', {
-      name: userType.name,
-      type: userType.type,
-      rows
-    })
-  };
-
   return (
     <>
       <div style={{height: '70px'}}>
@@ -115,9 +105,6 @@ function Questions(props) {
           </FormControl>
           <Button variant="contained" color="primary" onClick={handleExercise}>
             生成题目
-          </Button>
-          <Button variant="contained" color="primary" onClick={saveFile}>
-            保存
           </Button>
         </div>
         <div className={style.tables}>
