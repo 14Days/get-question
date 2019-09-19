@@ -1,4 +1,5 @@
 import axios from 'axios'
+import qs from 'qs'
 
 axios.defaults.baseURL = 'http://wghtstudio.cn/pair';
 
@@ -29,7 +30,7 @@ async function get(url = '', params = {}) {
 }
 
 async function post(url = '', data = {}) {
-  const response = await axios.post(url, data);
+  const response = await axios.post(url, qs.stringify(data));
 
   checkStatus(response);
 

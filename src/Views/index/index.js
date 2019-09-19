@@ -25,7 +25,8 @@ const Index = (props) => {
         username: info.username,
         password: info.password
       });
-      setUser(info.username)
+      setUser(info.username);
+      props.history.push('/questions')
     } catch (e) {
       setErrorMessage(e.message)
     }
