@@ -4,37 +4,35 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
-import {TypeContext} from '../../utils/context';
-import {USER} from '../../utils/userDetail'
+import {UserContext} from '../../utils/context';
+import request from '../../utils/request'
 
 import style from './index.module.scss';
 
 const Index = (props) => {
-  const {setUserType} = useContext(TypeContext);
+  const {setUser} = useContext(UserContext);
 
   const [info, setInfo] = useState({
     username: '',
     password: ''
   });
 
-  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const submit = () => {
-    for (let i = 0; i < USER.length; ++i) {
-      if (USER[i].username === info.username && info.password === '123') {
-        setUserType({
-          name: USER[i].username,
-          type: USER[i].type
-        });
-        props.history.replace('/questions');
-        return
-      }
+  const submit = async () => {
+    try {
+      await request.post('/log/in', {
+        username: info.username,
+        password: info.password
+      });
+      setUser(info.username)
+    } catch (e) {
+      setErrorMessage(e.message)
     }
-    setIsError(true);
   };
 
   const handleClose = () => {
-    setIsError(false);
+    setErrorMessage('');
   };
 
   return (
@@ -59,15 +57,15 @@ const Index = (props) => {
         </Button>
       </div>
       <Snackbar
-        open={isError}
+        open={errorMessage !== ''}
         anchorOrigin={{vertical: 'top', horizontal: 'center'}}
         autoHideDuration={2500}
         onClose={handleClose}
       >
         <SnackbarContent
-          open={isError}
+          open={errorMessage !== ''}
           onClose={handleClose}
-          message="请输入正确的用户名、密码"
+          message={errorMessage}
           style={{backgroundColor: 'red'}}
         />
       </Snackbar>

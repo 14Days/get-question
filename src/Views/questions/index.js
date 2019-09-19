@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import {TypeContext} from '../../utils/context';
+import {UserContext} from '../../utils/context';
 import TextField from "@material-ui/core/TextField";
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -21,7 +21,7 @@ import {exercise} from "../../utils/exercise";
 import style from './index.module.scss'
 
 function Questions(props) {
-  const {userType, setUserType} = useContext(TypeContext);
+  const {user, setUser} = useContext(UserContext);
 
   const [nums, setNums] = useState(10);
 

@@ -1,18 +1,15 @@
 import React, {createContext, useState} from 'react';
 
-export const TypeContext = createContext(null);
+export const UserContext = createContext(null);
 
 export const TypeProvider = props => {
-  let [userType, setUserType] = useState({
-    name: '张三1',
-    type: 1
-  });
+  let [user, setUser] = useState('');
 
   return (
-    <TypeContext.Provider value={{userType, setUserType}}>
+    <UserContext.Provider value={{user, setUser}}>
       {props.children}
-    </TypeContext.Provider>
+    </UserContext.Provider>
   )
 };
 
-export const TypeConsumer = TypeContext.Consumer;
+export const TypeConsumer = UserContext.Consumer;
