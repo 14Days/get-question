@@ -16,7 +16,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import {exercise} from "../../utils/exercise";
 
 import style from './index.module.scss'
 
@@ -27,26 +26,8 @@ function Questions(props) {
 
   const [rows, setRows] = useState([]);
 
-  const createType = useCallback(() => {
-    let temp = null;
-    switch (userType.type) {
-      case 1:
-        temp = '小学';
-        break;
-      case 2:
-        temp = '初中';
-        break;
-      case 3:
-        temp = '高中';
-        break;
-      default:
-        temp = '';
-    }
-    return temp;
-  }, [userType]);
-
   const handleLogout = () => {
-    setUserType(1);
+    setUser('');
     props.history.replace('/')
   };
 
@@ -63,8 +44,7 @@ function Questions(props) {
   };
 
   const handleExercise = async () => {
-    const temp = await exercise(nums, userType.type, userType.name);
-    setRows(temp);
+    setRows([]);
   };
 
   return (
@@ -72,7 +52,7 @@ function Questions(props) {
       <div style={{height: '70px'}}>
         <AppBar>
           <Toolbar>
-            <Typography variant="h6" style={{flexGrow: 1}}>准备生成{createType()}数学题目</Typography>
+            <Typography variant="h6" style={{flexGrow: 1}}>中小学数学考试系统</Typography>
             <Button color="inherit" onClick={handleLogout}>Logout</Button>
           </Toolbar>
         </AppBar>
@@ -91,8 +71,8 @@ function Questions(props) {
           <FormControl style={{margin: '16px 0 8px 8px'}}>
             <InputLabel htmlFor="age-simple">Age</InputLabel>
             <Select
-              value={userType.type}
-              onChange={(e) => setUserType({...userType, type: e.target.value})}
+              value={1}
+              onChange={(e) => console.log(e)}
               inputProps={{
                 name: 'type',
                 id: 'age-simple',
