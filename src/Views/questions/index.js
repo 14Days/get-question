@@ -53,7 +53,8 @@ function Questions(props) {
         <AppBar>
           <Toolbar>
             <Typography variant="h6" style={{flexGrow: 1}}>中小学数学考试系统</Typography>
-            <Button color="inherit" onClick={handleLogout}>Logout</Button>
+            <Button color="inherit">修改密码</Button>
+            <Button color="inherit" onClick={handleLogout}>退出登陆</Button>
           </Toolbar>
         </AppBar>
       </div>
