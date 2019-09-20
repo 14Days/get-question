@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import {withRouter} from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -16,7 +15,7 @@ import Header from '../../components/Header';
 
 import style from './index.module.scss'
 
-function Questions(props) {
+function Questions() {
   const [nums, setNums] = useState(10);
 
   const [rows, setRows] = useState([]);
@@ -93,4 +92,4 @@ function Questions(props) {
   )
 }
 
-export default withRouter(Questions);
+export default Questions;
