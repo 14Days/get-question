@@ -17,7 +17,7 @@ function App() {
   return (
     <>
       <Router>
-        <Route exact path='/' component={Index}/>
+        <Route path='/' component={Index}/>
         <PrivateRoute path='/questions' component={Questions}/>
       </Router>
       <Snackbar
