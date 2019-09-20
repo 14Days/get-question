@@ -3,10 +3,11 @@ import React, {createContext, useState} from 'react';
 export const UserContext = createContext(null);
 
 export const TypeProvider = props => {
-  let [user, setUser] = useState('');
+  const [user, setUser] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   return (
-    <UserContext.Provider value={{user, setUser}}>
+    <UserContext.Provider value={{user, setUser, errorMessage, setErrorMessage}}>
       {props.children}
     </UserContext.Provider>
   )

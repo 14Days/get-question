@@ -1,18 +1,39 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
-import {TypeProvider} from './utils/context';
+import SnackbarContent from "@material-ui/core/SnackbarContent";
+import Snackbar from "@material-ui/core/Snackbar";
+import {UserContext} from './utils/context';
 import PrivateRoute from "./components/privateRoute";
 import Index from './Views/index'
 import Questions from './Views/questions'
 
 function App() {
+  const {errorMessage, setErrorMessage} = useContext(UserContext);
+
+  const handleClose = () => {
+    setErrorMessage('');
+  };
+
   return (
-    <TypeProvider>
+    <>
       <Router>
         <Route exact path='/' component={Index}/>
         <PrivateRoute path='/questions' component={Questions}/>
       </Router>
-    </TypeProvider>
+      <Snackbar
+        open={errorMessage !== ''}
+        anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+        autoHideDuration={2500}
+        onClose={handleClose}
+      >
+        <SnackbarContent
+          open={errorMessage !== ''}
+          onClose={handleClose}
+          message={errorMessage}
+          style={{backgroundColor: 'red'}}
+        />
+      </Snackbar>
+    </>
   );
 }
 

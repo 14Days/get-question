@@ -7,8 +7,7 @@ import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import {UserContext} from '../../utils/context';
-import TextField from "@material-ui/core/TextField";
+import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Table from '@material-ui/core/Table';
@@ -16,6 +15,9 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+
+import {UserContext} from '../../utils/context';
+import request from '../../utils/request';
 
 import style from './index.module.scss'
 
@@ -26,9 +28,14 @@ function Questions(props) {
 
   const [rows, setRows] = useState([]);
 
-  const handleLogout = () => {
-    setUser('');
-    props.history.replace('/')
+  const handleLogout = async () => {
+    try {
+      await request.get('/log/out');
+      setUser('');
+      props.history.replace('/')
+    } catch (e) {
+      console.log(e)
+    }
   };
 
   const handleSetNum = (e) => {

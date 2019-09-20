@@ -2,22 +2,18 @@ import React, {useState, useContext} from 'react';
 import {withRouter} from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
-import SnackbarContent from '@material-ui/core/SnackbarContent';
 import {UserContext} from '../../utils/context';
 import request from '../../utils/request'
 
 import style from './index.module.scss';
 
 const Index = (props) => {
-  const {setUser} = useContext(UserContext);
+  const {setUser, setErrorMessage} = useContext(UserContext);
 
   const [info, setInfo] = useState({
     username: '',
     password: ''
   });
-
-  const [errorMessage, setErrorMessage] = useState('');
 
   const submit = async () => {
     try {
@@ -30,10 +26,6 @@ const Index = (props) => {
     } catch (e) {
       setErrorMessage(e.message)
     }
-  };
-
-  const handleClose = () => {
-    setErrorMessage('');
   };
 
   return (
@@ -57,19 +49,6 @@ const Index = (props) => {
           登陆
         </Button>
       </div>
-      <Snackbar
-        open={errorMessage !== ''}
-        anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-        autoHideDuration={2500}
-        onClose={handleClose}
-      >
-        <SnackbarContent
-          open={errorMessage !== ''}
-          onClose={handleClose}
-          message={errorMessage}
-          style={{backgroundColor: 'red'}}
-        />
-      </Snackbar>
     </div>
   );
 };
