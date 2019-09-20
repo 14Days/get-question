@@ -1,8 +1,5 @@
-import React, {useContext, useState} from "react";
+import React, {useState} from 'react';
 import {withRouter} from 'react-router-dom';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -15,28 +12,14 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-
-import {UserContext} from '../../utils/context';
-import request from '../../utils/request';
+import Header from '../../components/Header';
 
 import style from './index.module.scss'
 
 function Questions(props) {
-  const {user, setUser} = useContext(UserContext);
-
   const [nums, setNums] = useState(10);
 
   const [rows, setRows] = useState([]);
-
-  const handleLogout = async () => {
-    try {
-      await request.get('/log/out');
-      setUser('');
-      props.history.replace('/')
-    } catch (e) {
-      console.log(e)
-    }
-  };
 
   const handleSetNum = (e) => {
     let temp = parseInt(e.target.value);
@@ -56,15 +39,7 @@ function Questions(props) {
 
   return (
     <>
-      <div style={{height: '70px'}}>
-        <AppBar>
-          <Toolbar>
-            <Typography variant="h6" style={{flexGrow: 1}}>中小学数学考试系统</Typography>
-            <Button color="inherit">修改密码</Button>
-            <Button color="inherit" onClick={handleLogout}>退出登陆</Button>
-          </Toolbar>
-        </AppBar>
-      </div>
+      <Header/>
       <Container maxWidth={'md'} className={style.optionContainer}>
         <div>
           <TextField
