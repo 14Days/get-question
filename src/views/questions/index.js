@@ -1,92 +1,90 @@
-import React, {useState} from 'react';
-import Button from '@material-ui/core/Button';
+import React, {useState, useContext} from 'react';
 import Container from '@material-ui/core/Container';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import {Paper} from '@material-ui/core';
+import {UserContext} from '../../utils/context';
 import Header from '../../components/Header';
+import Options from './options';
+import Main from './main'
+import request from '../../utils/request';
 
 import style from './index.module.scss'
 
 function Questions() {
-  const [nums, setNums] = useState(10);
+  let temp = null;
+  const {setErrorMessage} = useContext(UserContext);
+  const [step, setStep] = useState(1);
+  const [questionParams, setQuestionParams] = useState({
+    num: 10,
+    type: 1
+  });
 
   const [rows, setRows] = useState([]);
+  const [index, setIndex] = useState(0);
+  const [userAnswer, setUserAnswer] = useState([]);
 
-  const handleSetNum = (e) => {
-    let temp = parseInt(e.target.value);
-
-    if (temp > 30) {
-      setNums(30);
-    } else if (temp < 10) {
-      setNums(10)
-    } else {
-      setNums(temp);
+  const handleExercise = async () => {
+    try {
+      const res = await request.get('/questions', questionParams);
+      setRows(res.data);
+      setStep(2);
+      setUserAnswer(Array(res.data.length).fill(0))
+    } catch (e) {
+      setErrorMessage(e.message)
     }
   };
 
-  const handleExercise = async () => {
-    setRows([]);
+  const makeChoose = (index) => {
+    return (e) => {
+      setUserAnswer(() => {
+        const tempAnswer = JSON.parse(JSON.stringify(userAnswer));
+        tempAnswer[index] = parseInt(e.target.value);
+        return tempAnswer;
+      })
+    };
   };
+
+  const changeIndex = (index) => {
+    return (val) => {
+      if (index + val < 0) {
+        setIndex(0);
+      } else if (index + val >= userAnswer.length) {
+        setIndex(userAnswer.length - 1);
+      } else {
+        setIndex(index + val)
+      }
+    }
+  };
+
+  switch (step) {
+    case 1: {
+      temp = <Options
+        questionParams={questionParams}
+        setQuestionParams={setQuestionParams}
+        handleExercise={handleExercise}
+      />;
+      break;
+    }
+    case 2: {
+      temp = <Main
+        question={rows[index]}
+        userAnswer={userAnswer[index]}
+        makeChoose={makeChoose(index)}
+        changeIndex={changeIndex(index)}
+      />;
+      break;
+    }
+    default: {
+      temp = null;
+    }
+  }
 
   return (
     <>
       <Header/>
       <Container maxWidth={'md'} className={style.optionContainer}>
-        <div>
-          <TextField
-            id="standard-password-input"
-            label="题目数量"
-            type="number"
-            autoComplete="current-password"
-            margin="normal"
-            value={nums}
-            onChange={handleSetNum}
-          />
-          <FormControl style={{margin: '16px 0 8px 8px'}}>
-            <InputLabel htmlFor="age-simple">Age</InputLabel>
-            <Select
-              value={1}
-              onChange={(e) => console.log(e)}
-              inputProps={{
-                name: 'type',
-                id: 'age-simple',
-              }}
-            >
-              <MenuItem value={1}>小学</MenuItem>
-              <MenuItem value={2}>初中</MenuItem>
-              <MenuItem value={3}>高中</MenuItem>
-            </Select>
-          </FormControl>
-          <Button variant="contained" color="primary" onClick={handleExercise}>
-            生成题目
-          </Button>
-        </div>
-        <div className={style.tables}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>序号</TableCell>
-                <TableCell align="right">题目</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, index) => (
-                <TableRow key={row}>
-                  <TableCell component="th" scope="row">{index + 1}</TableCell>
-                  <TableCell align="right">{row}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <Paper className={style.options}>
+          {temp}
+        </Paper>
       </Container>
     </>
   )
