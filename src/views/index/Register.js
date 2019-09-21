@@ -45,9 +45,21 @@ function useTimer() {
 }
 
 function Register() {
+  const {setErrorMessage} = useContext(UserContext);
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const {sendCode, buttonText} = useTimer();
+
+  const confirmCode = async (code) => {
+    try {
+      await request.get('/registered/confirmCode', {
+        code
+      });
+      console.log('success');
+    } catch (e) {
+      setErrorMessage(e.message)
+    }
+  };
 
   return (
     <>
@@ -70,10 +82,16 @@ function Register() {
           color="primary"
           style={{margin: '10px'}}
           onClick={() => sendCode(phone)}
-          disabled={buttonText !== 61}>
+          disabled={buttonText !== 61}
+        >
           {buttonText === 61 ? '发送验证码' : `重新发送(${buttonText})`}
         </Button>
-        <Button variant="contained" color="primary" style={{margin: '10px'}}>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{margin: '10px'}}
+          onClick={() => confirmCode(code)}
+        >
           验证
         </Button>
       </div>

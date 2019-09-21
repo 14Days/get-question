@@ -2,6 +2,7 @@ import axios from 'axios'
 import qs from 'qs'
 
 axios.defaults.baseURL = 'http://wghtstudio.cn/pair';
+axios.defaults.withCredentials = true;
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
