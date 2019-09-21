@@ -1,4 +1,5 @@
 import React, {useEffect, useRef, useState, useContext} from 'react';
+import {withRouter} from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import {UserContext} from '../../utils/context';
@@ -11,7 +12,7 @@ function useTimer() {
   const timeText = useRef(buttonText);
 
   useEffect(() => {
-    return clearInterval(time.current)
+    return () => clearInterval(time.current)
   }, []);
 
   useEffect(() => {
@@ -44,33 +45,55 @@ function useTimer() {
   return {sendCode, buttonText}
 }
 
-function Register() {
+function Register(props) {
   const {setErrorMessage} = useContext(UserContext);
+  const [step, setStep] = useState(1);
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const {sendCode, buttonText} = useTimer();
+  const [password, setPassword] = useState({
+    one: '',
+    two: ''
+  });
 
   const confirmCode = async (code) => {
     try {
       await request.get('/registered/confirmCode', {
         code
       });
-      console.log('success');
+      setStep(2);
     } catch (e) {
       setErrorMessage(e.message)
     }
   };
 
-  return (
+  const commitPassword = async () => {
+    if (password.one !== password.two) {
+      setErrorMessage('两次密码不一致')
+    } else {
+      try {
+        await request.get('/registered/setPassword', {
+          password: password.two
+        });
+        props.history.replace('/')
+      } catch (e) {
+        setErrorMessage(e.message)
+      }
+    }
+  };
+
+  const stepOne = (
     <>
       <TextField
-        id="standard-dense"
+        id="phone-input"
+        value={phone}
         label="大陆手机"
         margin="normal"
         onChange={(e) => setPhone(e.target.value)}
       />
       <TextField
-        id="standard-password-input"
+        id="code-input"
+        value={code}
         label="验证码"
         autoComplete="current-password"
         margin="normal"
@@ -96,7 +119,43 @@ function Register() {
         </Button>
       </div>
     </>
+  );
+
+  const stepTwo = (
+    <>
+      <TextField
+        id="password-one"
+        value={password.one}
+        label="密码"
+        margin="normal"
+        type="password"
+        onChange={(e) => setPassword({...password, one: e.target.value})}
+      />
+      <TextField
+        id="password-two"
+        value={password.two}
+        label="确认密码"
+        autoComplete="current-password"
+        margin="normal"
+        type="password"
+        onChange={(e) => setPassword({...password, two: e.target.value})}
+      />
+      <div>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{margin: '10px'}}
+          onClick={commitPassword}
+        >
+          提交
+        </Button>
+      </div>
+    </>
+  );
+
+  return (
+    step === 1 ? stepOne : stepTwo
   )
 }
 
-export default Register;
+export default withRouter(Register);

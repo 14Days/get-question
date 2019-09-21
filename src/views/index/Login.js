@@ -20,7 +20,7 @@ function Login(props) {
         password: info.password
       });
       setUser(info.username);
-      props.history.push('/questions')
+      props.history.replace('/questions')
     } catch (e) {
       setErrorMessage(e.message)
     }
