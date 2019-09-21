@@ -15,7 +15,7 @@ function Questions() {
   const [step, setStep] = useState(1);
   const [questionParams, setQuestionParams] = useState({
     num: 10,
-    type: 1
+    type: 0
   });
 
   const [rows, setRows] = useState([]);
@@ -70,6 +70,7 @@ function Questions() {
         userAnswer={userAnswer[index]}
         makeChoose={makeChoose(index)}
         changeIndex={changeIndex(index)}
+        text={index === userAnswer.length - 1}
       />;
       break;
     }

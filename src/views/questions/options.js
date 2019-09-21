@@ -43,9 +43,9 @@ function Options(props) {
               id: 'age-simple',
             }}
           >
-            <MenuItem value={1}>小学</MenuItem>
-            <MenuItem value={2}>初中</MenuItem>
-            <MenuItem value={3}>高中</MenuItem>
+            <MenuItem value={0}>小学</MenuItem>
+            <MenuItem value={1}>初中</MenuItem>
+            <MenuItem value={2}>高中</MenuItem>
           </Select>
         </FormControl>
       </div>
