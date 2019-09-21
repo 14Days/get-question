@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import Snackbar from "@material-ui/core/Snackbar";
 import {UserContext} from './utils/context';
@@ -17,8 +17,10 @@ function App() {
   return (
     <>
       <Router>
-        <Route path='/' component={Index}/>
-        <PrivateRoute path='/questions' component={Questions}/>
+        <Switch>
+          <PrivateRoute path='/questions' component={Questions}/>
+          <Route path='/' component={Index}/>
+        </Switch>
       </Router>
       <Snackbar
         open={errorMessage !== ''}

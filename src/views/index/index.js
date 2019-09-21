@@ -10,7 +10,7 @@ const Index = ({match}) => {
     <div className={style.mainContainer}>
       <div className={style.loginArea}>
         <Route exact path={match.path} component={Login}/>
-        <Route path={`${match.path}register`} component={Register}/>
+        <Route exact path={`${match.path}register`} component={Register}/>
       </div>
     </div>
   );
