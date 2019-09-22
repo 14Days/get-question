@@ -4,7 +4,8 @@ import {Paper} from '@material-ui/core';
 import {UserContext} from '../../utils/context';
 import Header from '../../components/Header';
 import Options from './options';
-import Main from './main'
+import Main from './main';
+import Result from './result'
 import request from '../../utils/request';
 
 import style from './index.module.scss'
@@ -21,6 +22,8 @@ function Questions() {
   const [rows, setRows] = useState([]);
   const [index, setIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState([]);
+
+  const [grade, setGrade] = useState(0);
 
   const handleExercise = async () => {
     try {
@@ -55,6 +58,22 @@ function Questions() {
     }
   };
 
+  const getGrade = () => {
+    let count = 0;
+    for (let i = 0; i < userAnswer.length; ++i) {
+      if (userAnswer[i] === rows[i]['correct']) {
+        count++
+      }
+    }
+    setGrade(Math.round((count / userAnswer.length) * 100));
+    setStep(3);
+  };
+
+  const reset = () => {
+    setStep(1);
+    setIndex(0);
+  };
+
   switch (step) {
     case 1: {
       temp = <Options
@@ -71,6 +90,14 @@ function Questions() {
         makeChoose={makeChoose(index)}
         changeIndex={changeIndex(index)}
         text={index === userAnswer.length - 1}
+        getGrade={getGrade}
+      />;
+      break;
+    }
+    case 3: {
+      temp = <Result
+        grade={grade}
+        reset={reset}
       />;
       break;
     }

@@ -7,7 +7,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Button from '@material-ui/core/Button';
 
 function Main(props) {
-  const {question: {question, answer}, userAnswer, makeChoose, changeIndex, text} = props;
+  const {question: {question, answer}, userAnswer, makeChoose, changeIndex, text, getGrade} = props;
   return (
     <>
       <FormControl component="fieldset">
@@ -23,7 +23,7 @@ function Main(props) {
           </Button>
           {
             text ?
-              <Button variant="contained" color="primary" style={{margin: '10px'}} onClick={() => changeIndex(1)}>
+              <Button variant="contained" color="primary" style={{margin: '10px'}} onClick={getGrade}>
                 提交
               </Button> :
               <Button variant="contained" color="primary" style={{margin: '10px'}} onClick={() => changeIndex(1)}>
