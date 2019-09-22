@@ -1,0 +1,15 @@
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .container {
+    height: 300px;
+    width: 500px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+}

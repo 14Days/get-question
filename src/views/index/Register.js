@@ -69,7 +69,7 @@ function Register(props) {
   };
 
   const commitPassword = async () => {
-    if (confirm(password.two)) {
+    if (!confirm(password.two)) {
       setErrorMessage('密码必须为6-10位且包含大小写与数字');
       return
     }
