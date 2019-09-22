@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import {UserContext} from '../../utils/context';
 import request from '../../utils/request';
+import confirm from "../../utils/confirm";
 
 function useTimer() {
   const [buttonText, setButtonText] = useState(61);
@@ -68,6 +69,10 @@ function Register(props) {
   };
 
   const commitPassword = async () => {
+    if (confirm(password.two)) {
+      setErrorMessage('密码必须为6-10位且包含大小写与数字');
+      return
+    }
     if (password.one !== password.two) {
       setErrorMessage('两次密码不一致')
     } else {
