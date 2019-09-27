@@ -1,46 +1,122 @@
-# 软件工程个人项目
+## 软件工程个人项目
 
-本项目主要要完成的是，中小学数学试卷的生成工作。
+本项目主要的需求如下：
 
-## 主要技术
+- [x] 用户注册功能
+  - [x] 手机验证码功能
+  - [x] 输入两次密码匹配后设置密码成功（密码6-10位，必须含大小写字母和数字）
+- [x] 修改密码功能
+  - [x] 用户在登录状态下可修改密码
+  - [x] 输入正确的原密码，再输入两次相同的新密码后修改
+- [x] 题目参数设置
+  - [x] 选择小学、初中和高中三个选项
+  - [x] 输入需要生成的题目数量
+- [x] 答题功能
+  - [x] 生成一张试卷（同一张卷子不能有相同题目，题目全部为选择题，界面显示第一题的题干和四个选项）
+  - [x] 最后一题提交后，界面显示分数（分数根据答对的百分比计算）
+- [x] 分数界面可选择退出或继续做题
+- [x] 小初高数学题目要求见个人项目
 
-本项目主要使用的是`React`、`Electron`两项技术构建的桌面应用，这两项技术分别源自于`Facebook`与`Github`。业内最成功的应用包括但不限于`VSCode`。
+### 技术选择及运行
 
-## 运行方式
+本项目前端主要使用的是`React`、`React-Router`、`Axios`三项技术构建的Web应用。
 
-因为要上交代码包，所以没有将其打包为可执行文件，运行demo需要一次运行下面的命令（推荐使用yarn进行依赖管理）：
+#### 运行方式
+
+因为要上交代码包，所以没有将其打包，运行demo需要运行下面的命令（推荐使用yarn进行依赖管理）：
 
 ```shell
 # 安装依赖
 yarn install
 # 运行React项目
 yarn start
-# 运行Electron外壳
-yarn run dev
 ```
 
-完成后可以看到，出现对应的桌面应用。
+运行之后会自动打开浏览器，为前端效果。
 
-## 主要难点
+### 主要难点
 
-在Electron应用中分为主进程与渲染进程。渲染进程可以理解为简单的浏览器窗口，主进程负责与宿主机进行交互，调用Node.js的API等。
+主要的难点在前端路由的控制方面，前端路由的答题界面的路由应该是私有的，所以根据`React-Router`官方的建议我们使用`Render Props`，对用户权限予以验证，具体的实现如下：
 
-存储文件以及查重的时候就涉及到渲染进程和主进程进行通信，调用Node的API进行文件操作（主要代码在`/main.js`与`/src/Views/question/index.js`中）。
+```js
+import React, {useContext} from 'react'
+import {Route, Redirect} from 'react-router-dom'
+import {UserContext} from '../utils/context'
 
-## 运行效果
+function PrivateRoute({component: Component, ...rest}) {
+  const {user} = useContext(UserContext);
 
-<img src="./img/BC6EF631-31CC-4B6A-97C3-F4C765F38EE2.png" alt="BC6EF631-31CC-4B6A-97C3-F4C765F38EE2" style="zoom: 33%;" />
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        user !== '' ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/",
+              state: {from: props.location}
+            }}
+          />
+        )
+      }
+    />
+  );
+}
 
-这是登陆界面，输入对应的用户名密码即可成功进入出题界面，并且有相应的错误提示：
+export default PrivateRoute;
+```
 
-<img src="./img/CA3780D1E5578AA0FEFBD68AA327545A.jpg" alt="CA3780D1E5578AA0FEFBD68AA327545A" style="zoom:33%;" />
+还有一个难点是对于用户信息的多组件共享，我们简单的使用Context实现一个迷你的全局状态管理，具体实现如下：
 
-这是出题界面，在上方的标题是可以改变的随着下方选择的类别的不同，LOGOUT按钮提供退出登陆的选项；下方的出题数目限制了数值的大小与只能输入数字，旁边的select可以改变出题的类型，旁边两个按钮的作用很明显。
+```js
+import React, {createContext, useState} from 'react';
 
-<img src="./img/F0DA476B01FC7780B674D57E233D4861.jpg" alt="F0DA476B01FC7780B674D57E233D4861" style="zoom:33%;" />
+export const UserContext = createContext(null);
 
-生成了对应的题目，最后我们查看保存的文件是否正确：
+export const TypeProvider = props => {
+  const [user, setUser] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-<img src="./img/00A56E75CB330BC6033F66AF69678EA3.jpg" alt="00A56E75CB330BC6033F66AF69678EA3" style="zoom:33%;" />
+  return (
+    <UserContext.Provider value={{user, setUser, errorMessage, setErrorMessage}}>
+      {props.children}
+    </UserContext.Provider>
+  )
+};
 
-可以看到我们生成的题目中既生成了题目的序号，中间还有空行，并且生成的文件格式也是正确的。
+export const TypeConsumer = UserContext.Consumer;
+```
+
+对于Context的消费，我们使用`React Hooks`，具体说明可以查看官方文档。
+
+### 运行效果
+
+<img src="./img/image-20190927153604626.png" alt="image-20190927153604626" style="zoom: 25%;" />
+
+这是登陆界面，输入用户名密码即可登陆，注意的是用户名默认为注册用手机号码，接下来看一下注册界面。
+
+<img src="./img/image-20190927153944584.png" alt="image-20190927154011285" style="zoom:25%;" />
+
+这是用户的手机验证见面，输入正确的验证码之后就可以进入设置密码界面。
+
+<img src="./img/image-20190927154257869.png" alt="image-20190927154257869" style="zoom:25%;" />
+
+输入密码之后及注册成功成功跳转到设置密码界面设置密码后，重新回到登陆界面，接下来我们看看答题界面。
+
+<img src="./img/image-20190927155342487.png" alt="image-20190927155342487" style="zoom:25%;" />
+
+这是用户的出题界面，选择需要的参数，即可生成题目。
+
+<img src="./img/image-20190927155407876.png" alt="image-20190927155407876" style="zoom:25%;" />
+
+这是修改密码的接口，输入旧密码，并输入两次新密码之后完成密码的修改。
+
+<img src="./img/image-20190927155434843.png" alt="image-20190927155434843" style="zoom:25%;" />
+
+这是用户的答题界面，选择其中一个选项之后，点击上一题、下一题切换题目。
+
+<img src="./img/image-20190927155525641.png" alt="image-20190927155525641" style="zoom:25%;" />
+
+完成答题之后显示成绩，并且可以接着做题或者退出登陆。
